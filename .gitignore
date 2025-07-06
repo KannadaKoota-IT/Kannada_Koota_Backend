@@ -4,6 +4,8 @@ node_modules/
 .env
 .DS_Store
 
+admin.json
+
 # Logs
 logs
 *.log
