@@ -1,4 +1,4 @@
-// routes/teamRoutes.js
+// backend/routes/teamRoutes.js
 import express from "express";
 import {
   getAllTeamMembers,
