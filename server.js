@@ -19,6 +19,9 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+// Serve uploaded images statically
+app.use("/uploads", express.static("uploads"));
+
 // Middleware
 app.use(cors());
 app.use(express.json());
