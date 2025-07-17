@@ -1,4 +1,5 @@
 import Gallery from "../models/gallery_model.js";
+import cloudinary from "../utils/cloudinary.js";
 
 // GET all media
 export const getAllMedia = async (req, res) => {
@@ -24,8 +25,9 @@ export const uploadMedia = async (req, res) => {
 
   const newMedia = new Gallery({
     title,
-    mediaUrl: `/uploads/gallery/${file.filename}`,
-    mediaType
+    mediaUrl: file.path, // ✅ Cloudinary URL
+    mediaType,
+    publicId: file.filename, // ✅ needed to delete later
   });
 
   await newMedia.save();
@@ -36,7 +38,15 @@ export const uploadMedia = async (req, res) => {
 export const deleteMedia = async (req, res) => {
   const { id } = req.params;
   try {
-    await Gallery.findByIdAndDelete(id);
+    const media = await Gallery.findByIdAndDelete(id);
+
+    // ✅ also delete from Cloudinary
+    if (media?.publicId) {
+      await cloudinary.uploader.destroy(media.publicId, {
+        resource_type: media.mediaType === "video" ? "video" : "image",
+      });
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error("Error deleting media:", err);
