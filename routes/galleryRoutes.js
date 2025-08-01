@@ -5,7 +5,7 @@ import { uploadMedia, getAllMedia, deleteMedia } from "../controllers/galleryCon
 const router = express.Router();
 
 router.get("/", getAllMedia);
-router.post("/", upload.single("media"), uploadMedia); // ✅ now uploads to Cloudinary
+router.post("/", upload.single("media"), uploadMedia); 
 router.delete("/:id", deleteMedia);
 
 export default router;
