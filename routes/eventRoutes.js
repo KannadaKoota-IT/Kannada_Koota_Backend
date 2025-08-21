@@ -7,7 +7,7 @@ import {
   deleteEvent,
 } from "../controllers/eventController.js";
 import { protect } from "../middleware/authMiddleware.js";
-import { uploadEvent } from "../middleware/uploadEvent.js";
+import upload from "../middleware/cloudinaryUpload.js";
 
 const router = express.Router();
 
@@ -15,8 +15,8 @@ const router = express.Router();
 router.get("/", getAllEvents);
 
 // Admin-only, protected + file upload
-router.post("/", protect, uploadEvent.single("image"), createEvent);
-router.put("/:id", protect, uploadEvent.single("image"), updateEvent);
+router.post("/", protect, upload.single("image"), createEvent);
+router.put("/:id", protect, upload.single("image"), updateEvent);
 router.delete("/:id", protect, deleteEvent);
 
 export default router;

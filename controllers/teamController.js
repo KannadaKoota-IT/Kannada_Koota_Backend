@@ -1,72 +1,119 @@
 // controllers/teamController.js
-import TeamMember from "../models/teamMember_model.js";
+import { Team, TeamMember } from "../models/team_model.js";
 
-// ✅ Get all team members
-export const getAllTeamMembers = async (req, res) => {
+// ✅ Add a Team
+export const addTeam = async (req, res) => {
   try {
-    const members = await TeamMember.find().sort({ createdAt: -1 });
-    res.status(200).json(members);
+    const { team_name } = req.body;
+    const team_photo = req.file ? req.file.path : "";
+
+    const newTeam = new Team({ team_name, team_photo });
+    await newTeam.save();
+
+    res.status(201).json({ success: true, message: "Team created", team: newTeam });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch team members." });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// ✅ Add team member with image upload
+// ✅ Add a Team Member
 export const addTeamMember = async (req, res) => {
-  console.log("🧾 BODY:", req.body);
-  console.log("🖼️ FILE:", req.file);
-
-  const { name, role } = req.body;
-  const photoUrl = req.file ? `/uploads/teams/${req.file.filename}` : "";
-
-  if (!name || !role || !req.file) {
-    return res.status(400).json({ error: "Name, role, and photo are required." });
-  }
-
   try {
-    const newMember = new TeamMember({ name, role, photoUrl });
-    await newMember.save();
-    res.status(201).json({ message: "Team member added", member: newMember });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to add team member." });
-  }
-};
+    const { teamId } = req.params;
+    const { name, email, phone, role } = req.body;
+    const image_url = req.file ? req.file.path : "";
 
-// ✅ Update team member
-export const updateTeamMember = async (req, res) => {
-  const { id } = req.params;
-  const { name, role } = req.body;
-  const updates = { name, role };
+    // check if team exists
+    const team = await Team.findById(teamId);
+    if (!team) return res.status(404).json({ success: false, message: "Team not found" });
 
-  if (req.file) {
-    updates.photoUrl = `/uploads/teams/${req.file.filename}`;
-  }
-
-  try {
-    const updated = await TeamMember.findByIdAndUpdate(id, updates, {
-      new: true,
+    const newMember = new TeamMember({
+      team: teamId,
+      name,
+      email,
+      phone,
+      image_url,
+      role,
     });
-    if (!updated) return res.status(404).json({ error: "Member not found" });
 
-    res.status(200).json({ message: "Team member updated", member: updated });
+    await newMember.save();
+    res.status(201).json({ success: true, message: "Member added", member: newMember });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to update team member." });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// ✅ Delete team member
-export const deleteTeamMember = async (req, res) => {
-  const { id } = req.params;
+// ✅ Get All Teams
+export const getAllTeams = async (req, res) => {
   try {
-    const removed = await TeamMember.findByIdAndDelete(id);
-    if (!removed) return res.status(404).json({ error: "Member not found" });
-
-    res.status(200).json({ message: "Team member deleted" });
+    const teams = await Team.find();
+    res.status(200).json({ success: true, teams });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to delete team member." });
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ✅ Get All Members of a Team
+export const getTeamMembers = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    // Find team details
+    const team = await Team.findById(teamId).select("team_name team_photo");
+    if (!team) {
+      return res.status(404).json({ success: false, message: "Team not found" });
+    }
+
+    // Find all members of the team
+    const team_members = await TeamMember.find({ team: teamId });
+
+    const heads = team_members.filter((m) => m.role === "head");
+    const members = team_members.filter((m) => m.role === "member");
+
+    res.status(200).json({
+      success: true,
+      id: teamId,
+      team_name: team.team_name,
+      team_photo: team.team_photo,
+      heads,
+      members,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+// ✅ Update a Member
+export const updateTeamMember = async (req, res) => {
+  try {
+    const { memberId } = req.params;
+    const { name, email, phone, image_url, role } = req.body;
+
+    const updatedMember = await TeamMember.findByIdAndUpdate(
+      memberId,
+      { name, email, phone, image_url, role },
+      { new: true }
+    );
+
+    if (!updatedMember) return res.status(404).json({ success: false, message: "Member not found" });
+
+    res.status(200).json({ success: true, message: "Member updated", member: updatedMember });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ✅ Delete a Member
+export const deleteTeamMember = async (req, res) => {
+  try {
+    const { memberId } = req.params;
+
+    const deleted = await TeamMember.findByIdAndDelete(memberId);
+    if (!deleted) return res.status(404).json({ success: false, message: "Member not found" });
+
+    res.status(200).json({ success: true, message: "Member deleted" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };

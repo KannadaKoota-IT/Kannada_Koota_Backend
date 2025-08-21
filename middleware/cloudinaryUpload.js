@@ -5,8 +5,8 @@ import cloudinary from "../utils/cloudinary.js";
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "kannada_koota_gallery",
-    resource_type: "auto", // handles image/video
+    folder: "kannada_koota",
+    resource_type: "auto",
   },
 });
 

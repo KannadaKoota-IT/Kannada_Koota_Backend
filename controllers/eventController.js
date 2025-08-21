@@ -15,7 +15,7 @@ export const getAllEvents = async (req, res) => {
 // CREATE new event (with image upload)
 export const createEvent = async (req, res) => {
   const { title, description, date, location } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : "";
+  const imageUrl = req.file ? req.file.path : "";
 
   if (!title || !description || !date) {
     return res.status(400).json({ error: "Title, description, and date are required" });
@@ -39,7 +39,7 @@ export const updateEvent = async (req, res) => {
   const updates = { title, description, date, location };
 
   if (req.file) {
-    updates.imageUrl = `/uploads/${req.file.filename}`;
+    updates.imageUrl = req.file.path;
   }
 
   try {

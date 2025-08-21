@@ -32,7 +32,7 @@ app.use("/uploads", express.static("uploads"));
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
-app.use("/api/team", teamRoutes);
+app.use("/api/teams", teamRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/gallery", galleryRoutes);
