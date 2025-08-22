@@ -9,7 +9,7 @@ const teamMemberSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     email: { type: String, required: true },
-    phone: { type: String, required: true },
+    phone: { type: String},
     image_url: { type: String },
     role: {
       type: String,

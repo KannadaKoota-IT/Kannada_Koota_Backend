@@ -14,7 +14,7 @@ export const getAllMedia = async (req, res) => {
 
 // POST new media
 export const uploadMedia = async (req, res) => {
-  const { title } = req.body;
+  const { desc } = req.body;
   const file = req.file;
 
   if (!file) {
@@ -24,7 +24,7 @@ export const uploadMedia = async (req, res) => {
   const mediaType = file.mimetype.startsWith("video") ? "video" : "image";
 
   const newMedia = new Gallery({
-    title,
+    desc,
     mediaUrl: file.path, // ✅ Cloudinary URL
     mediaType,
     publicId: file.filename, // ✅ needed to delete later
