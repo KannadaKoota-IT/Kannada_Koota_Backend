@@ -8,6 +8,7 @@ const teamMemberSchema = new mongoose.Schema(
       required: true,
     },
     name: { type: String, required: true },
+    name_k: {type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String},
     image_url: { type: String },
@@ -23,6 +24,7 @@ const teamMemberSchema = new mongoose.Schema(
 const teamSchema = new mongoose.Schema(
   {
     team_name: { type: String, required: true },
+    team_name_k: {type: String, required: true},
     team_photo: { type: String, required: true },
   },
   { timestamps: true }

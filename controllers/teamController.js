@@ -4,10 +4,10 @@ import { Team, TeamMember } from "../models/team_model.js";
 // ✅ Add a Team
 export const addTeam = async (req, res) => {
   try {
-    const { team_name } = req.body;
+    const { team_name, team_name_k } = req.body;
     const team_photo = req.file ? req.file.path : "";
 
-    const newTeam = new Team({ team_name, team_photo });
+    const newTeam = new Team({ team_name, team_name_k, team_photo });
     await newTeam.save();
 
     res.status(201).json({ success: true, message: "Team created", team: newTeam });
@@ -20,7 +20,7 @@ export const addTeam = async (req, res) => {
 export const addTeamMember = async (req, res) => {
   try {
     const { teamId } = req.params;
-    const { name, email, phone, role } = req.body;
+    const { name, name_k, email, phone, role } = req.body;
     const image_url = req.file ? req.file.path : "";
 
     // check if team exists
@@ -30,6 +30,7 @@ export const addTeamMember = async (req, res) => {
     const newMember = new TeamMember({
       team: teamId,
       name,
+      name_k,
       email,
       phone,
       image_url,
@@ -88,11 +89,11 @@ export const getTeamMembers = async (req, res) => {
 export const updateTeamMember = async (req, res) => {
   try {
     const { memberId } = req.params;
-    const { name, email, phone, image_url, role } = req.body;
+    const { name, name_k, email, phone, image_url, role } = req.body;
 
     const updatedMember = await TeamMember.findByIdAndUpdate(
       memberId,
-      { name, email, phone, image_url, role },
+      { name, name_k, email, phone, image_url, role },
       { new: true }
     );
 

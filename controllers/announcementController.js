@@ -77,9 +77,9 @@ export const getAllAnnouncements = async (req, res) => {
 // ADD a new announcement
 export const addAnnouncement = async (req, res) => {
   try {
-    const { title, message, link } = req.body;
+    const { title, title_k, message, message_k, link } = req.body;
 
-    if (!title || !message) {
+    if (!title || !title_k || !message || !message_k) {
       return res
         .status(400)
         .json({ success: false, message: "Title and message are required" });
@@ -98,7 +98,9 @@ export const addAnnouncement = async (req, res) => {
 
     const newAnnouncement = new Announcement({
       title,
+      title_k,
       message,
+      message_k,
       link,
       mediaUrl,
       mediaType,
@@ -117,9 +119,10 @@ export const addAnnouncement = async (req, res) => {
 export const updateAnnouncement = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, message, link } = req.body;
+    const { title, title_k, message, message_k, link } = req.body;
 
-    let updateData = { title, message, link };
+
+    let updateData = { title, title_k, message, message_k, link };
 
     if (req.file) {
       updateData.mediaUrl = req.file.path;

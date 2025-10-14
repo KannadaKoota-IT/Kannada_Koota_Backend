@@ -14,15 +14,15 @@ export const getAllEvents = async (req, res) => {
 
 // CREATE new event (with image upload)
 export const createEvent = async (req, res) => {
-  const { title, description, date, location } = req.body;
+  const { title, title_k, description, description_k, date, eventTime, location } = req.body;
   const imageUrl = req.file ? req.file.path : "";
 
-  if (!title || !description || !date) {
+  if (!title || !title_k || !description || !description_k || !date) {
     return res.status(400).json({ error: "Title, description, and date are required" });
   }
 
   try {
-    const newEvent = new Event({ title, description, date, location, imageUrl });
+    const newEvent = new Event({ title, title_k, description, description_k, date, eventTime, location, imageUrl });
     await newEvent.save();
     res.status(201).json(newEvent);
   } catch (err) {
@@ -34,9 +34,10 @@ export const createEvent = async (req, res) => {
 // UPDATE event (optional new image)
 export const updateEvent = async (req, res) => {
   const { id } = req.params;
-  const { title, description, date, location } = req.body;
+  const { title, title_k, description, description_k, date, eventTime, location } = req.body;
 
-  const updates = { title, description, date, location };
+
+  const updates = { title, title_k, description, description_k, date, eventTime, location };
 
   if (req.file) {
     updates.imageUrl = req.file.path;
