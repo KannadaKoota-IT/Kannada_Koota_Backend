@@ -66,8 +66,30 @@ import Announcement from "../models/announcement_model.js";
 // GET all announcements
 export const getAllAnnouncements = async (req, res) => {
   try {
+    const { lang, admin } = req.query;
     const announcements = await Announcement.find().sort({ date: -1 });
-    res.status(200).json({ success: true, announcements });
+
+    // If admin=true, return all fields for editing
+    if (admin === 'true') {
+      res.status(200).json({ success: true, announcements });
+      return;
+    }
+
+    // Transform announcements based on language
+    const transformedAnnouncements = announcements.map(announcement => ({
+      _id: announcement._id,
+      title: lang === 'kn' ? announcement.title_k : announcement.title,
+      message: lang === 'kn' ? announcement.message_k : announcement.message,
+      link: announcement.link,
+      mediaUrl: announcement.mediaUrl,
+      mediaType: announcement.mediaType,
+      mediaPublicId: announcement.mediaPublicId,
+      date: announcement.date,
+      createdAt: announcement.createdAt,
+      updatedAt: announcement.updatedAt
+    }));
+
+    res.status(200).json({ success: true, announcements: transformedAnnouncements });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server error" });

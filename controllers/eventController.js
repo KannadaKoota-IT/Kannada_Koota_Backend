@@ -4,8 +4,23 @@ import Event from "../models/event_model.js";
 // GET all events
 export const getAllEvents = async (req, res) => {
   try {
+    const { lang } = req.query;
     const events = await Event.find().sort({ createdAt: -1 });
-    res.status(200).json(events);
+
+    // Transform events based on language
+    const transformedEvents = events.map(event => ({
+      _id: event._id,
+      title: lang === 'kn' ? event.title_k : event.title,
+      description: lang === 'kn' ? event.description_k : event.description,
+      date: event.date,
+      eventTime: event.eventTime,
+      imageUrl: event.imageUrl,
+      location: event.location,
+      createdAt: event.createdAt,
+      updatedAt: event.updatedAt
+    }));
+
+    res.status(200).json(transformedEvents);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch events" });
