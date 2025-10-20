@@ -4,7 +4,10 @@ import Event from "../models/event_model.js";
 // GET all events
 export const getAllEvents = async (req, res) => {
   try {
-    const { lang } = req.query;
+        const lang = (req.query.lang || 'en').toLowerCase();
+    // Prevent caches from serving the wrong language
+    res.set('Cache-Control', 'no-store');
+    res.set('Vary', 'Accept-Language, Origin');
     const events = await Event.find().sort({ createdAt: -1 });
 
     // Transform events based on language
