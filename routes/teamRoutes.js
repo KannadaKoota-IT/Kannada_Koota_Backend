@@ -6,6 +6,7 @@ import {
   getAllTeams,
   getTeamMembers,
   updateTeamMember,
+  updateTeamOrder,
   deleteTeamMember,
 } from "../controllers/teamController.js";
 import { protect } from "../middleware/authMiddleware.js";
@@ -16,9 +17,10 @@ const router = express.Router();
 
 router.get("/", getAllTeams);
 router.post("/", protect, upload.single("photo"), addTeam);
-router.post("/:teamId/members", protect,upload.single("photo"), addTeamMember);
+router.post("/:teamId/members", protect, upload.single("photo"), addTeamMember);
 router.get("/:teamId/members", getTeamMembers);
 router.put("/members/:memberId", protect, upload.single("photo"), updateTeamMember);
+router.put("/:teamId/order", protect, updateTeamOrder);
 router.delete("/members/:memberId", protect, deleteTeamMember);
 
 export default router;

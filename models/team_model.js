@@ -26,6 +26,7 @@ const teamSchema = new mongoose.Schema(
     team_name: { type: String, required: true },
     team_name_k: {type: String, required: true},
     team_photo: { type: String, required: true },
+    order: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
