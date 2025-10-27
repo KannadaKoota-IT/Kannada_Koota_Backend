@@ -89,11 +89,14 @@ export const getTeamMembers = async (req, res) => {
 export const updateTeamMember = async (req, res) => {
   try {
     const { memberId } = req.params;
-    const { name, name_k, email, phone, image_url, role } = req.body;
+    const { name, name_k, email, phone, role } = req.body;
+
+    const updateData = { name, name_k, email, phone, role };
+    if (req.file) updateData.image_url = req.file.path;
 
     const updatedMember = await TeamMember.findByIdAndUpdate(
       memberId,
-      { name, name_k, email, phone, image_url, role },
+      updateData,
       { new: true }
     );
 
