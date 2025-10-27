@@ -9,7 +9,7 @@ const announcementSchema = new mongoose.Schema({
   mediaUrl: { type: String },
   mediaType: { type: String },
   mediaPublicId: {type: String},
-  date: { type: Date, default: Date.now },
+  date: { type: Date, default: Date.now, required: true },
 });
 
 export default mongoose.model("Announcement", announcementSchema);

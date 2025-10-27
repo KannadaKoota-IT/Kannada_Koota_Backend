@@ -69,13 +69,11 @@ export const getAllAnnouncements = async (req, res) => {
     const { lang, admin } = req.query;
     const announcements = await Announcement.find().sort({ date: -1 });
 
-    // If admin=true, return all fields for editing
     if (admin === 'true') {
       res.status(200).json({ success: true, announcements });
       return;
     }
 
-    // Transform announcements based on language
     const transformedAnnouncements = announcements.map(announcement => ({
       _id: announcement._id,
       title: lang === 'kn' ? announcement.title_k : announcement.title,
@@ -127,6 +125,7 @@ export const addAnnouncement = async (req, res) => {
       mediaUrl,
       mediaType,
       mediaPublicId,
+      date: req.body.date ? new Date(req.body.date) : new Date(),
     });
 
     await newAnnouncement.save();
@@ -145,6 +144,10 @@ export const updateAnnouncement = async (req, res) => {
 
 
     let updateData = { title, title_k, message, message_k, link };
+
+    if (req.body.date) {
+      updateData.date = new Date(req.body.date);
+    }
 
     if (req.file) {
       updateData.mediaUrl = req.file.path;

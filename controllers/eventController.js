@@ -5,12 +5,30 @@ import Event from "../models/event_model.js";
 export const getAllEvents = async (req, res) => {
   try {
         const lang = (req.query.lang || 'en').toLowerCase();
+        const isAdmin = req.query.admin === 'true';
     // Prevent caches from serving the wrong language
     res.set('Cache-Control', 'no-store');
     res.set('Vary', 'Accept-Language, Origin');
-    const events = await Event.find().sort({ createdAt: -1 });
+    const events = await Event.find().sort({ date: -1 });
 
-    // Transform events based on language
+    // If admin request, return full bilingual data
+    if (isAdmin) {
+      const adminEvents = events.map(event => ({
+        _id: event._id,
+        title: event.title,
+        title_k: event.title_k,
+        description: event.description,
+        description_k: event.description_k,
+        date: event.date,
+        eventTime: event.eventTime,
+        imageUrl: event.imageUrl,
+        location: event.location,
+        createdAt: event.createdAt,
+        updatedAt: event.updatedAt
+      }));
+      return res.status(200).json(adminEvents);
+    }
+
     const transformedEvents = events.map(event => ({
       _id: event._id,
       title: lang === 'kn' ? event.title_k : event.title,
