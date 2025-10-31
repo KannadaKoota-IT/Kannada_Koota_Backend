@@ -5,6 +5,7 @@ const gallerySchema = new mongoose.Schema({
   mediaType: { type: String, enum: ["image", "video"], required: true },
   desc: { type: String, required: true },
   publicId: { type: String, required: true },
+  link: { type: String, default: "" },
   uploadedAt: { type: Date, default: Date.now }
 });
 

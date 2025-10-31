@@ -34,6 +34,9 @@ const eventSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    link: {
+      type: String,
+    },
   },
   {
     timestamps: true,

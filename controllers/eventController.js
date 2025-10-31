@@ -23,6 +23,7 @@ export const getAllEvents = async (req, res) => {
         eventTime: event.eventTime,
         imageUrl: event.imageUrl,
         location: event.location,
+        link: event.link,
         createdAt: event.createdAt,
         updatedAt: event.updatedAt
       }));
@@ -37,6 +38,7 @@ export const getAllEvents = async (req, res) => {
       eventTime: event.eventTime,
       imageUrl: event.imageUrl,
       location: event.location,
+      link: event.link,
       createdAt: event.createdAt,
       updatedAt: event.updatedAt
     }));
@@ -50,7 +52,7 @@ export const getAllEvents = async (req, res) => {
 
 // CREATE new event (with image upload)
 export const createEvent = async (req, res) => {
-  const { title, title_k, description, description_k, date, eventTime, location } = req.body;
+  const { title, title_k, description, description_k, date, eventTime, location, link } = req.body;
   const imageUrl = req.file ? req.file.path : "";
 
   if (!title || !title_k || !description || !description_k || !date) {
@@ -58,7 +60,7 @@ export const createEvent = async (req, res) => {
   }
 
   try {
-    const newEvent = new Event({ title, title_k, description, description_k, date, eventTime, location, imageUrl });
+    const newEvent = new Event({ title, title_k, description, description_k, date, eventTime, location, imageUrl, link });
     await newEvent.save();
     res.status(201).json(newEvent);
   } catch (err) {
@@ -70,10 +72,10 @@ export const createEvent = async (req, res) => {
 // UPDATE event (optional new image)
 export const updateEvent = async (req, res) => {
   const { id } = req.params;
-  const { title, title_k, description, description_k, date, eventTime, location } = req.body;
+  const { title, title_k, description, description_k, date, eventTime, location, link } = req.body;
 
 
-  const updates = { title, title_k, description, description_k, date, eventTime, location };
+  const updates = { title, title_k, description, description_k, date, eventTime, location, link };
 
   if (req.file) {
     updates.imageUrl = req.file.path;

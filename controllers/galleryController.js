@@ -14,7 +14,7 @@ export const getAllMedia = async (req, res) => {
 
 // POST new media
 export const uploadMedia = async (req, res) => {
-  const { desc } = req.body;
+  const { desc, link } = req.body;
   const file = req.file;
 
   if (!file) {
@@ -28,10 +28,34 @@ export const uploadMedia = async (req, res) => {
     mediaUrl: file.path, // ✅ Cloudinary URL
     mediaType,
     publicId: file.filename, // ✅ needed to delete later
+    link: link || "",
   });
 
   await newMedia.save();
   res.status(201).json({ success: true, media: newMedia });
+};
+
+// UPDATE media
+export const updateMedia = async (req, res) => {
+  const { id } = req.params;
+  const { desc, link } = req.body;
+
+  try {
+    const updatedMedia = await Gallery.findByIdAndUpdate(
+      id,
+      { desc, link },
+      { new: true }
+    );
+
+    if (!updatedMedia) {
+      return res.status(404).json({ error: "Media not found" });
+    }
+
+    res.json({ success: true, media: updatedMedia });
+  } catch (err) {
+    console.error("Error updating media:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 // DELETE media
