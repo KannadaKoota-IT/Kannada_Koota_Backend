@@ -6,6 +6,7 @@ const gallerySchema = new mongoose.Schema({
   desc: { type: String, required: true },
   publicId: { type: String, required: true },
   link: { type: String, default: "" },
+  order: { type: Number, default: 0 },
   uploadedAt: { type: Date, default: Date.now }
 });
 

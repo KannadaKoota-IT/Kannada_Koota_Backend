@@ -4,7 +4,7 @@ import cloudinary from "../utils/cloudinary.js";
 // GET all media
 export const getAllMedia = async (req, res) => {
   try {
-    const media = await Gallery.find().sort({ uploadedAt: -1 });
+    const media = await Gallery.find().sort({ order: 1, uploadedAt: -1 });
     res.json(media);
   } catch (err) {
     console.error("Error fetching gallery:", err);
@@ -54,6 +54,27 @@ export const updateMedia = async (req, res) => {
     res.json({ success: true, media: updatedMedia });
   } catch (err) {
     console.error("Error updating media:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// UPDATE gallery order
+export const updateGalleryOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order } = req.body;
+
+    const updatedMedia = await Gallery.findByIdAndUpdate(
+      id,
+      { order },
+      { new: true }
+    );
+
+    if (!updatedMedia) return res.status(404).json({ error: "Media not found" });
+
+    res.json({ success: true, media: updatedMedia });
+  } catch (err) {
+    console.error("Error updating gallery order:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
