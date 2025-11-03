@@ -10,7 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
-import announcementRoutes from "./routes/announcementRoutes.js"; 
+import announcementRoutes from "./routes/announcementRoutes.js";
 import galleryRoutes from "./routes/galleryRoutes.js";
 
 dotenv.config();
@@ -19,15 +19,48 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Serve uploaded images statically
-app.use("/uploads", express.static("uploads"));
+// Trust proxy (important for load balancer)
+app.enable('trust proxy');
 
-// Middleware
-app.use(cors());
+// CORS Configuration - ADD THIS BEFORE OTHER MIDDLEWARE
+app.use(cors({
+  origin: [
+    'http://localhost:3000',           // Local development
+    'https://yourdomain.com',          // Your production domain
+    'https://www.yourdomain.com',      // WWW version
+    'https://your-project.vercel.app', // Vercel preview
+    /\.vercel\.app$/                   // All Vercel deployments
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Body parsers
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded images statically
 app.use("/uploads", express.static("uploads"));
+
+// HTTPS redirect for production (prevents redirect loop)
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') {
+      return res.redirect(301, `https://${req.hostname}${req.url}`);
+    }
+    next();
+  });
+}
+
+// Test endpoint to verify connection
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Backend is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // API Routes
 app.use("/api/auth", authRoutes);
