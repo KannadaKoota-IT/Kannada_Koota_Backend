@@ -4,7 +4,7 @@ import cloudinary from "../utils/cloudinary.js";
 // GET all media
 export const getAllMedia = async (req, res) => {
   try {
-    const media = await Gallery.find().sort({ order: 1, uploadedAt: -1 });
+    const media = await Gallery.find().sort({ order: -1});
     res.json(media);
   } catch (err) {
     console.error("Error fetching gallery:", err);
