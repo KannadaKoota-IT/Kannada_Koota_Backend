@@ -26,9 +26,9 @@ app.enable('trust proxy');
 app.use(cors({
   origin: [
     'http://localhost:3000',           // Local development
-    'https://yourdomain.com',          // Your production domain
-    'https://www.yourdomain.com',      // WWW version
-    'https://your-project.vercel.app', // Vercel preview
+    'https://kannadakootapesu.website', // Your production domain
+    'https://www.kannadakootapesu.website', // WWW version
+    'https://kannada-koota-pesu.vercel.app', // Vercel preview
     /\.vercel\.app$/                   // All Vercel deployments
   ],
   credentials: true,
