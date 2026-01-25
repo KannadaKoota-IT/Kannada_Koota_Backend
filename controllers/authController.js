@@ -48,6 +48,6 @@ export const loginAdmin = async (req, res) => {
     res.status(200).json({ success: true, token });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: err });
   }
 };

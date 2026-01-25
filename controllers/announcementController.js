@@ -66,8 +66,28 @@ import Announcement from "../models/announcement_model.js";
 // GET all announcements
 export const getAllAnnouncements = async (req, res) => {
   try {
+    const { lang, admin } = req.query;
     const announcements = await Announcement.find().sort({ date: -1 });
-    res.status(200).json({ success: true, announcements });
+
+    if (admin === 'true') {
+      res.status(200).json({ success: true, announcements });
+      return;
+    }
+
+    const transformedAnnouncements = announcements.map(announcement => ({
+      _id: announcement._id,
+      title: lang === 'kn' ? announcement.title_k : announcement.title,
+      message: lang === 'kn' ? announcement.message_k : announcement.message,
+      link: announcement.link,
+      mediaUrl: announcement.mediaUrl,
+      mediaType: announcement.mediaType,
+      mediaPublicId: announcement.mediaPublicId,
+      date: announcement.date,
+      createdAt: announcement.createdAt,
+      updatedAt: announcement.updatedAt
+    }));
+
+    res.status(200).json({ success: true, announcements: transformedAnnouncements });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server error" });
@@ -77,9 +97,9 @@ export const getAllAnnouncements = async (req, res) => {
 // ADD a new announcement
 export const addAnnouncement = async (req, res) => {
   try {
-    const { title, message, link } = req.body;
+    const { title, title_k, message, message_k, link } = req.body;
 
-    if (!title || !message) {
+    if (!title || !title_k || !message || !message_k) {
       return res
         .status(400)
         .json({ success: false, message: "Title and message are required" });
@@ -98,11 +118,14 @@ export const addAnnouncement = async (req, res) => {
 
     const newAnnouncement = new Announcement({
       title,
+      title_k,
       message,
+      message_k,
       link,
       mediaUrl,
       mediaType,
       mediaPublicId,
+      date: req.body.date ? new Date(req.body.date) : new Date(),
     });
 
     await newAnnouncement.save();
@@ -117,9 +140,14 @@ export const addAnnouncement = async (req, res) => {
 export const updateAnnouncement = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, message, link } = req.body;
+    const { title, title_k, message, message_k, link } = req.body;
 
-    let updateData = { title, message, link };
+
+    let updateData = { title, title_k, message, message_k, link };
+
+    if (req.body.date) {
+      updateData.date = new Date(req.body.date);
+    }
 
     if (req.file) {
       updateData.mediaUrl = req.file.path;
