@@ -3,7 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
-import connectDB from "./config/db.js";
+import connectDB, { dbStatus } from "./config/db.js";
 
 // Routes
 import authRoutes from "./routes/authRoutes.js";
@@ -74,6 +74,7 @@ app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
     message: "Backend is running",
+    db: dbStatus(),
     timestamp: new Date().toISOString(),
   });
 });
