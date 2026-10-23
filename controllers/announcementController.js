@@ -76,8 +76,10 @@ export const getAllAnnouncements = async (req, res) => {
 
     const transformedAnnouncements = announcements.map(announcement => ({
       _id: announcement._id,
-      title: lang === 'kn' ? announcement.title_k : announcement.title,
-      message: lang === 'kn' ? announcement.message_k : announcement.message,
+      title: lang === 'kn' ? (announcement.title_k || announcement.title) : (announcement.title || announcement.title_k),
+      message: lang === 'kn' ? (announcement.message_k || announcement.message) : (announcement.message || announcement.message_k),
+      title_k: announcement.title_k || '',
+      message_k: announcement.message_k || '',
       link: announcement.link,
       mediaUrl: announcement.mediaUrl,
       mediaType: announcement.mediaType,

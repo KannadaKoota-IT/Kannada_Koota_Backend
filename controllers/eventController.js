@@ -32,8 +32,10 @@ export const getAllEvents = async (req, res) => {
 
     const transformedEvents = events.map(event => ({
       _id: event._id,
-      title: lang === 'kn' ? event.title_k : event.title,
-      description: lang === 'kn' ? event.description_k : event.description,
+      title: lang === 'kn' ? (event.title_k || event.title) : (event.title || event.title_k),
+      description: lang === 'kn' ? (event.description_k || event.description) : (event.description || event.description_k),
+      title_k: event.title_k || '',
+      description_k: event.description_k || '',
       date: event.date,
       eventTime: event.eventTime,
       imageUrl: event.imageUrl,

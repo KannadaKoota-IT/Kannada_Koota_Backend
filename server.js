@@ -1,4 +1,4 @@
-// backend/server.js
+// backend/server.js - Atlas Cloudinary
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -13,6 +13,8 @@ import eventRoutes from "./routes/eventRoutes.js";
 import announcementRoutes from "./routes/announcementRoutes.js";
 import galleryRoutes from "./routes/galleryRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import vachanaRoutes from "./routes/vachanaRoutes.js";
+import wordOfDayRoutes from "./routes/wordOfDayRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -87,6 +89,8 @@ app.use("/api/events", eventRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/vachanas", vachanaRoutes);
+app.use("/api/wordofday", wordOfDayRoutes);
 
 // Root route
 app.get("/", (req, res) => {

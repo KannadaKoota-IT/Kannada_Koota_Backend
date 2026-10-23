@@ -68,8 +68,8 @@ export const getTeamMembers = async (req, res) => {
     // Find all members of the team
     const team_members = await TeamMember.find({ team: teamId });
 
-    const heads = team_members.filter((m) => m.role === "head");
-    const members = team_members.filter((m) => m.role === "member");
+    const heads = team_members.filter((m) => (m.role || "").toLowerCase() === "head");
+    const members = team_members.filter((m) => (m.role || "").toLowerCase() === "member");
 
     res.status(200).json({
       success: true,
